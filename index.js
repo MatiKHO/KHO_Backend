@@ -9,7 +9,7 @@ const app = express();
 const PORT = process.env.PORT || 5500;
 
 app.use(cors({
-  origin: ['https://kumiho.onrender.com', 'https://kumihoesports.com'],
+  origin: ['https://kumiho.onrender.com', 'https://kumihoesports.com', 'kumihoesports.com', 'http://localhost:5173'],
   credentials: true
 }));
 app.use(express.json());
