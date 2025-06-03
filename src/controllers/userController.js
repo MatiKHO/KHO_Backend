@@ -60,7 +60,7 @@ export const loginUser = async (req, res) => {
     const { password: _, ...userWithoutPassword } = user;
     res.status(200).json({ message: "Inicio de sesión exitoso", token, user: userWithoutPassword });
   } catch (error) {
-    console.error("Error al iniciar sesión:", error);
+    console.error("Error al iniciar sesión:", error, error?.stack);
     res.status(500).json({ message: "Error al iniciar sesión" });
   }
 };
