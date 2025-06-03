@@ -7,7 +7,10 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5500;
 
-app.use(cors());
+app.use(cors({
+  origin: ['https://kumiho.onrender.com', 'https://kumihoesports.com'],
+  credentials: true
+}));
 app.use(express.json());
 
 app.get('/', (req, res) => res.send('API Kumiho operativa'));
