@@ -57,7 +57,8 @@ export const loginUser = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
-    res.status(200).json({ message: "Inicio de sesión exitoso", token });
+    const { password: _, ...userWithoutPassword } = user;
+    res.status(200).json({ message: "Inicio de sesión exitoso", token, user: userWithoutPassword });
   } catch (error) {
     console.error("Error al iniciar sesión:", error);
     res.status(500).json({ message: "Error al iniciar sesión" });
