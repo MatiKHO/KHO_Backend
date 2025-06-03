@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import userRoutes from './src/routes/user.route.js';
 
 dotenv.config();
 
@@ -14,6 +15,9 @@ app.use(cors({
 app.use(express.json());
 
 app.get('/', (req, res) => res.send('API Kumiho operativa'));
+
+// Routes
+app.use("/users", userRoutes);
 
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
