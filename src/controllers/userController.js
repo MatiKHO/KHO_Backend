@@ -2,6 +2,9 @@ import prisma from "../prisma/index.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+import { sendResetEmail } from "../utils/sendEmail.js";
+import { generateResetToken, verifyResetToken } from "../utils/resetToken.js";
+
 export const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -79,5 +82,42 @@ export const userProfile = async (req, res) => {
     res.status(200).json({ message: "Perfil del usuario encontrado", user });
   } catch (error) {
     res.status(500).json({ message: "Error al obtener el perfil del usuario" });
+  }
+};
+
+export const requestPasswordReset = async (req, res) => {
+  const { email } = req.body;
+  const user = await prisma.user.findUnique({ where: { email } });
+
+  if (!user) return res.status(404).json({ message: "Correo no encontrado" });
+
+  const token = generateResetToken({ id: user.id, email: user.email });
+  const resetLink = `https://www.kumihoesports.com/reset-password?token=${token}`;
+
+  try {
+    await sendResetEmail(email, resetLink);
+    res.json({ message: "Correo enviado con instrucciones" });
+  } catch (err) {
+    console.error("Error al enviar el email:", err);
+    res.status(500).json({ message: "Error al enviar el email" });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  try {
+    const payload = verifyResetToken(token);
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await prisma.user.update({
+      where: { id: payload.id },
+      data: { password: hashedPassword },
+    });
+
+    res.json({ message: "Contraseña actualizada correctamente" });
+  } catch (err) {
+    console.error("Error al resetear la contraseña:", err);
+    res.status(400).json({ message: "Token inválido o expirado" });
   }
 };
