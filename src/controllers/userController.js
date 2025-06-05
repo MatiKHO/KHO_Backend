@@ -92,7 +92,7 @@ export const requestPasswordReset = async (req, res) => {
   if (!user) return res.status(404).json({ message: "Correo no encontrado" });
 
   const token = generateResetToken({ id: user.id, email: user.email });
-  const resetLink = `https://www.kumihoesports.com/reset-password?token=${token}`;
+  const resetLink = `https://www.kumihoesports.com/reset-password?token=${encodeURIComponent(token)}`;
 
   try {
     await sendResetEmail(email, resetLink);
