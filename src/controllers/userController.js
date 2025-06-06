@@ -87,6 +87,7 @@ export const userProfile = async (req, res) => {
 
 export const requestPasswordReset = async (req, res) => {
   const { email } = req.body;
+  console.log("[RESET REQUEST] Email recibido:", email);
   const user = await prisma.user.findUnique({ where: { email } });
 
   if (!user) return res.status(404).json({ message: "Correo no encontrado" });
